@@ -4,12 +4,12 @@
 class Layer {
 public:
   Layer();
-  virtual ~Layer() {};
+  Layer(Layer *source);
+  ~Layer();
 
+  bool collisionOrBoundary(Layer *layer);
   void merge(Layer *layer);
-  void shiftLt();
-  void shiftRt();
-  void shiftDn();
+  void fill(int n);
   void dump();
 
   int *digVal;

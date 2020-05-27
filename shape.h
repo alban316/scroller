@@ -6,14 +6,25 @@
 #include "layer.h"
 
 class Shape {
+  int rotationStep;
+  int x;
+  int y;
+
 public:
-  Shape(Point *point);
-  virtual ~Shape() {};
+  Shape(Point *point, int rotationStep, int x, int y);
+  ~Shape();
 
-  void rotate(int degrees);
-  Layer* toLayer();
+  int getNextRotationStep();
+  void setRotationStep(int step);
+  void setRelativeTranslation(int x, int y);
+  void setLayer();
   void dump();
+  bool trySpawn(Layer *background, int dx = 0, int dy = -2);
+  bool tryLeftRight(Layer *background, int dx);
+  bool tryDrop(Layer *background, int dy);
+  bool tryRotate(Layer *background);
 
+  Layer *layer;
   Point *point;
 };
 

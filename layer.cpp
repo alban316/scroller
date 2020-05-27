@@ -9,6 +9,18 @@ Layer::Layer() {
   }
 }
 
+Layer::~Layer() {
+  delete digVal;
+}
+
+// create a layer from a copy
+Layer::Layer(Layer *source) {
+  digVal = new int[8];
+
+  for (int i = 0; i < 8; i++) {
+    digVal[i] = source->digVal[i];
+  }
+}
 
 void Layer::dump() {
   for (int i = 0; i < 8; i++) {
@@ -18,6 +30,29 @@ void Layer::dump() {
   }
 }
 
-void Layer::shiftDn() {
-  
+bool Layer::collisionOrBoundary(Layer *layer) {
+  for (int i = 0; i < 8; i++) {
+    int vars[] = {digVal[i], layer->digVal[i], digVal[i] & layer->digVal[i]};
+    Logger::log("this = ?, layer = ?, & = ?", vars, 3);
+    
+    if (((digVal[i] & layer->digVal[i]) != 0) | (digVal[i] > 255)) {
+      return true;
+    }
+      
+  }
+
+  return false;
+}
+
+void Layer::merge(Layer *layer) {
+  for (int i = 0; i < 8; i++) {
+    digVal[i] = digVal[i] | layer->digVal[i];
+  }
+}
+
+// fill an arbitrary value;
+void Layer::fill(int n) {
+  for (int i = 0; i < 8; i++) {
+    digVal[i] = n;
+  }
 }
