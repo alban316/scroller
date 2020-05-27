@@ -3,6 +3,7 @@
 #include "shape.h"
 #include "logger.h"
 #include <SPI.h>
+#include <stdlib.h>
 
 #define REG_DECODE (0x09)
 #define REG_DIGIT(pos) ((pos) + 1)
@@ -15,13 +16,18 @@
 
 
 // globals & consts
-Point ShapeTemplate[2][4] = {
+Point ShapeTemplate[7][4] = {
   {Point(0,0), Point(-1,0), Point(1,0), Point(-1,-1)}, // L Shape, Left
   {Point(0,0), Point(-1,0), Point(1,0), Point(1, -1)}, // L Shape, Right
+  {Point(0,0), Point(1,0), Point(0,-1), Point(-1, -1)}, // S Shape, Left
+  {Point(0,0), Point(-1,0), Point(0,-1), Point(1, -1)}, // S Shape, Right
+  {Point(0,0), Point(-1,0), Point(1, 0), Point(0, -1)}, //T-Shape
+  {Point(0,0), Point(-1,0), Point(-2,0), Point(1, 0)},  //Stick Shape
+  {Point(0,0), Point(-1,0), Point(-1,-1), Point(0, -1)} //Square
 };
 
 const int buttonPin = 2;
-
+const int joyPin[] = {0, 1};
 
 void set_register(byte address, byte value)
 {
@@ -67,13 +73,36 @@ void render(Layer *layer) {
 }
 
 
-void processInput(Shape *shape, Layer *background) {
+// analogToggle is for either X or Y, but I only care about X for now
+// otherwise I'd process one or the other in each pass due to docs say wait 100ms between polling analog pins
+// for my wiring VRX = pin 0 and VRY = pin 1
+// per docs apply this formula to analog read (data * 9 / 1024) + 48;
+// with above formula idle appears to be 52???
+void processInput(Shape *shape, Layer *background, int analogToggle) {
   int buttonState = digitalRead(buttonPin);
+  int analogVal = analogRead(joyPin[0]); 
+  int treatedVal = (analogVal * 9 / 1024) + 48; 
 
   if (buttonState == HIGH) {
     Logger::log("button pushed!");
     shape->tryRotate(background);
   }
+
+  int analogDelta = treatedVal - 52;
+  if (analogDelta < 0) {
+    shape->tryLeftRight(background, 1);
+  }
+
+  else if (analogDelta > 0) {
+    shape->tryLeftRight(background, -1);
+  }
+
+  //int vars[] = {analogDelta};
+  //Logger::log("analog = ?", vars, 1);
+}
+
+short randomShape() {
+  return rand() % 7;
 }
 
 
@@ -81,13 +110,14 @@ void loop (void) {
   Layer *background = new Layer();
   Layer *displ = new Layer();
 
-  Shape shape = Shape(ShapeTemplate[0], 0, 0, 0);
+  Shape shape = Shape(ShapeTemplate[randomShape()], 0, 0, 0);
 
   int elapsed = millis();
   int lastInput = 0;
   int lastStatus = 0;
   int lastDrop = 0;
   int quit = elapsed;
+  int analogToggle = 0;
 
   bool playing = shape.trySpawn(background, 0, -2);
 
@@ -102,7 +132,8 @@ void loop (void) {
     // process input ever 100 ms
     if (elapsed - lastInput > 100) {
       lastInput = elapsed;
-      processInput(&shape, background);
+      analogToggle = !analogToggle;
+      processInput(&shape, background, analogToggle);
     }
 
     // process drop!!
@@ -111,7 +142,7 @@ void loop (void) {
       
       if (!shape.tryDrop(background, 1)) {
         background->merge(shape.layer);
-        shape = Shape(ShapeTemplate[0], 0, 0, 0);
+        shape = Shape(ShapeTemplate[randomShape()], 0, 0, 0);
         playing = shape.trySpawn(background, 0, -2);
       }      
     }
@@ -122,11 +153,15 @@ void loop (void) {
       Logger::log("idle");
     }
 
-    if (elapsed - quit > 20000) {
-      playing = false;
-    }
+    //if (elapsed - quit > 20000) {
+    //  playing = false;
+    //}
 
   }
 
   Logger::log("Game Over!");
+
+  // may not need to delete if I re-use them for some idle screen animation in outer loop??
+  delete displ;
+  delete background;
 }

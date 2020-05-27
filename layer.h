@@ -9,10 +9,10 @@ public:
 
   bool collisionOrBoundary(Layer *layer);
   void merge(Layer *layer);
-  void fill(int n);
+  void fill(short n);
   void dump();
 
-  int *digVal;
+  short *digVal;
 };
 
 #endif

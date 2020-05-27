@@ -10,7 +10,7 @@
 
 const float RotationStep[] = {0, TO_RADIANS(90), PI, TO_RADIANS(270)};
 
-Shape::Shape(Point *point, int rotationStep, int x, int y) {
+Shape::Shape(Point *point, short rotationStep, short x, short y) {
   this->point = point;
   this->rotationStep = rotationStep;
   this->x = x;
@@ -24,8 +24,8 @@ Shape::~Shape() {
 }
 
 
-int Shape::getNextRotationStep() {
-  int nextStep = rotationStep + 1;
+short Shape::getNextRotationStep() {
+  short nextStep = rotationStep + 1;
 
   if (nextStep < 4)
     return nextStep;
@@ -35,20 +35,20 @@ int Shape::getNextRotationStep() {
 }
 
 
-void Shape::setRotationStep(int step) {
-  rotationStep = step;
+void Shape::setRotationStep(short sstep) {
+  rotationStep = sstep;
   setLayer();
 }
 
 
-void Shape::setRelativeTranslation(int dx, int dy) {
+void Shape::setRelativeTranslation(short dx, short dy) {
   x += dx;
   y += dy;
   setLayer();
 }
 
 
-bool Shape::trySpawn(Layer *background, int dx, int dy) {
+bool Shape::trySpawn(Layer *background, short dx, short dy) {
 
   //int vars[] = {dx, dy};
   //Logger::log("trySpawn dx = ?, dy = ?", vars, 2);
@@ -81,12 +81,12 @@ bool Shape::tryRotate(Layer *background) {
 }
 
 
-bool Shape::tryLeftRight(Layer *background, int dx) {
+bool Shape::tryLeftRight(Layer *background, short dx) {
   return trySpawn(background, dx, 0);
 }
 
 
-bool Shape::tryDrop(Layer *background, int dy) {
+bool Shape::tryDrop(Layer *background, short dy) {
   if (layer->digVal[7] > 0)
     // we are already as low as we can go
     return false;
@@ -99,16 +99,16 @@ bool Shape::tryDrop(Layer *background, int dy) {
 void Shape::setLayer() {
   layer = new Layer();
 
-  for (int i = 0; i < 4; i++) {
-    int px = point[i].xAtTheta(RotationStep[rotationStep]);
-    int py = point[i].yAtTheta(RotationStep[rotationStep]);
+  for (short i = 0; i < 4; i++) {
+    short px = point[i].xAtTheta(RotationStep[rotationStep]);
+    short py = point[i].yAtTheta(RotationStep[rotationStep]);
 
     // where 3, 3 is the approx center of an 8x8 matrix
     // and y is a member indicating vertical translation of the shape
-    int row = 3 + py + y;
-    int col = 3 - px + x;
+    short row = 3 + py + y;
+    short col = 3 - px + x;
 
-    int mypow = round(pow(2,col));
+    short mypow = round(pow(2,col));
 
     // check if off the board to right
     if ((col != 0) & (mypow == 0))
@@ -121,9 +121,9 @@ void Shape::setLayer() {
 
 
 void Shape::dump() {
-  for (int i = 0; i < 4; i++) {
-    int x = point[i].xAtTheta(RotationStep[rotationStep]);
-    int y = point[i].yAtTheta(RotationStep[rotationStep]);
+  for (short i = 0; i < 4; i++) {
+    short x = point[i].xAtTheta(RotationStep[rotationStep]);
+    short y = point[i].yAtTheta(RotationStep[rotationStep]);
 
     int vars[] = {x, y};
     Logger::log("(x = ?, y = ?)", vars, 2);
