@@ -4,15 +4,17 @@
 
 
 class Point {
+  int x;
+  int y;
+
 public:
   Point(int x, int y);
   virtual ~Point() {};
-  void rotate(int degrees);
 
   static float toRadians(int degrees);
 
-  int x;
-  int y;
+  int xAtTheta(float radians);
+  int yAtTheta(float radians);
 };
 
 #endif

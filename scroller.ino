@@ -15,8 +15,10 @@
 #define OFF (0x0)
 
 
-Point shape_L_L[] = {Point(0,0), Point(-1,0), Point(1,0), Point(-1,-1)};
-
+Point ShapeTemplate[2][4] = {
+  {Point(0,0), Point(-1,0), Point(1,0), Point(-1,-1)}, // L Shape, Left
+  {Point(0,0), Point(-1,0), Point(1,0), Point(1, -1)}, // L Shape, Right
+};
 
 void set_register(byte address, byte value)
 {
@@ -62,20 +64,21 @@ void render(Layer *layer) {
 
 
 void loop (void) {
-  Shape shape = Shape(shape_L_L);
+  //init background layer with all zeros
+  Layer *background = new Layer();
+  Layer *foreground;
 
-  Layer *layer = shape.toLayer();
+  Shape shape = Shape(ShapeTemplate[0], 0, 0, 0);
 
-  render(layer);
-  delay(100);
-
-  for (int deg = 90; deg < 360; deg += 90) {
-    shape.rotate(deg);
-    shape.y++;
-    layer = shape.toLayer();
-    render(layer);
-    delay(100);
+  if (shape.trySpawn(background)) {
+    foreground = shape.layer;
+    render(foreground);
   }
+
+  else {
+    Logger::log("Game Over!");
+  }
+
 
   delay(1000);
 

@@ -24,28 +24,12 @@ void Logger::log(const char *msg, int *vars, int len) {
 }
 
 
+void Logger::log(const char *msg) {
+  char c;
 
-/*
-#include "logger.h"
-#include "string.h"
-#include <HardwareSerial.h>
-
-void Logger::log(String msg, int *vars, int len) {
-  int indexOf = msg.indexOf('?');
-  if (indexOf > 0) {
-    String sub0 = msg.substring(0, indexOf);
-    String sub1 = msg.substring(indexOf +1, msg.length() - indexOf);
-    int var0 = vars[0];
-
-    int varRemain[len - 1];
-    for (int i = 1; i <= len; i++) {
-      varRemain[i - 1] = vars[i];
-    }
-
-    return sub0 + var0 + Logger::log(sub1, varRemain, len - 1);
+  for (const char *p = msg; c = *p; p++) {
+      Serial.print(c);
   }
 
-  else
-    return msg;
+  Serial.print("\n\r");
 }
-*/
