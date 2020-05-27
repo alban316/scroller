@@ -4,15 +4,15 @@
 
 
 class Point {
-  int x;
-  int y;
+  short x;
+  short y;
 
 public:
-  Point(int x, int y);
+  Point(short x, short y);
   virtual ~Point() {};
 
-  int xAtTheta(float radians);
-  int yAtTheta(float radians);
+  short xAtTheta(float radians);
+  short yAtTheta(float radians);
 };
 
 #endif

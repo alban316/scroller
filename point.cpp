@@ -2,14 +2,14 @@
 #include "math.h"
 
 
-Point::Point(int x, int y) {
+Point::Point(short x, short y) {
   this->x = x;
   this->y = y;
 };
 
 
 //in radians
-int Point::xAtTheta(float theta) {
+short Point::xAtTheta(float theta) {
   float s = sin(theta);
   float c = cos(theta);
 
@@ -17,7 +17,7 @@ int Point::xAtTheta(float theta) {
 }
 
 //in radians
-int Point::yAtTheta(float theta) {
+short Point::yAtTheta(float theta) {
   float s = sin(theta);
   float c = cos(theta);
 
