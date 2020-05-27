@@ -10,9 +10,6 @@ public:
   bool collisionOrBoundary(Layer *layer);
   void merge(Layer *layer);
   void fill(int n);
-  void shiftLt();
-  void shiftRt();
-  //void shiftDn();
   void dump();
 
   int *digVal;
