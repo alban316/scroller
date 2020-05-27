@@ -21,7 +21,7 @@ Point ShapeTemplate[2][4] = {
 };
 
 const int buttonPin = 2;
-
+const int joyPin[] = {0, 1};
 
 void set_register(byte address, byte value)
 {
@@ -66,14 +66,29 @@ void render(Layer *layer) {
   set_register(REG_SHUTDOWN, ON);
 }
 
-
-void processInput(Shape *shape, Layer *background) {
+// for my wiring VRX = pin 0 and VRY = pin 1
+// for some reason idle appears to be 52???
+void processInput(Shape *shape, Layer *background, int analogToggle) {
   int buttonState = digitalRead(buttonPin);
+  int analogVal = analogRead(joyPin[0]); //analogToggle is for either X or Y, but I only care about X for now
+  int treatedVal = (analogVal * 9 / 1024) + 48; // per docs apply this formula (data * 9 / 1024) + 48;
 
   if (buttonState == HIGH) {
     Logger::log("button pushed!");
     shape->tryRotate(background);
   }
+
+  int analogDelta = treatedVal - 52;
+  if (analogDelta < 0) {
+    shape->tryLeftRight(background, 1);
+  }
+
+  else if (analogDelta > 0) {
+    shape->tryLeftRight(background, -1);
+  }
+
+  //int vars[] = {analogDelta};
+  //Logger::log("analog = ?", vars, 1);
 }
 
 
@@ -88,6 +103,7 @@ void loop (void) {
   int lastStatus = 0;
   int lastDrop = 0;
   int quit = elapsed;
+  int analogToggle = 0;
 
   bool playing = shape.trySpawn(background, 0, -2);
 
@@ -102,7 +118,8 @@ void loop (void) {
     // process input ever 100 ms
     if (elapsed - lastInput > 100) {
       lastInput = elapsed;
-      processInput(&shape, background);
+      analogToggle = !analogToggle;
+      processInput(&shape, background, analogToggle);
     }
 
     // process drop!!
@@ -129,4 +146,8 @@ void loop (void) {
   }
 
   Logger::log("Game Over!");
+
+  // may not need to delete if I re-use them for some idle screen animation in outer loop??
+  delete displ;
+  delete background;
 }

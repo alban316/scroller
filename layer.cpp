@@ -32,8 +32,8 @@ void Layer::dump() {
 
 bool Layer::collisionOrBoundary(Layer *layer) {
   for (int i = 0; i < 8; i++) {
-    int vars[] = {digVal[i], layer->digVal[i], digVal[i] & layer->digVal[i]};
-    Logger::log("this = ?, layer = ?, & = ?", vars, 3);
+    //int vars[] = {digVal[i], layer->digVal[i], digVal[i] & layer->digVal[i]};
+    //Logger::log("this = ?, layer = ?, & = ?", vars, 3);
     
     if (((digVal[i] & layer->digVal[i]) != 0) | (digVal[i] > 255)) {
       return true;
