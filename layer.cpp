@@ -17,7 +17,3 @@ void Layer::dump() {
     Logger::log("row ? = ?", vars, 2);
   }
 }
-
-void Layer::shiftDn() {
-  
-}

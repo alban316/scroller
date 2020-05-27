@@ -68,14 +68,15 @@ void loop (void) {
 
   render(layer);
   delay(100);
-    
+
   for (int deg = 90; deg < 360; deg += 90) {
     shape.rotate(deg);
+    shape.y++;
     layer = shape.toLayer();
     render(layer);
     delay(100);
   }
 
   delay(1000);
-  
+
 }

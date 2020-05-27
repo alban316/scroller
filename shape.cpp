@@ -7,6 +7,8 @@
 
 Shape::Shape(Point *point) {
   this->point = point;
+
+  y = -2; //translation (experiment)
 }
 
 void Shape::rotate(int degrees) {
@@ -19,15 +21,11 @@ Layer* Shape::toLayer() {
   Layer *layer = new Layer();
 
   for (int i = 0; i < 4; i++) {
-    int row = 3 + this->point[i].y;
+    int row = 3 + this->point[i].y + this->y;  // <---vertical translation
     int col = 3 - this->point[i].x;
 
-    // since when is pow(2,3) = 7????
-    int mypow = round(pow(2,col)); // just for logging
-    //int vars[] = {row, col, mypow }; // just for logging
-    //Logger::log("row = ?, col = ?, pow = ?", vars, 3); 
-
-    layer->digVal[row] += mypow; //pow(2,col);
+    int mypow = round(pow(2,col));
+    layer->digVal[row] += mypow;
   }
 
   return layer;

@@ -15,6 +15,8 @@ public:
   void dump();
 
   Point *point;
+
+  int y;
 };
 
 #endif

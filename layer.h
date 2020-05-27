@@ -9,7 +9,7 @@ public:
   void merge(Layer *layer);
   void shiftLt();
   void shiftRt();
-  void shiftDn();
+  //void shiftDn();
   void dump();
 
   int *digVal;
