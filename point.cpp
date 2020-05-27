@@ -2,15 +2,10 @@
 #include "math.h"
 
 
-
 Point::Point(int x, int y) {
   this->x = x;
   this->y = y;
 };
-
-//void Point::rotate(int degrees) {
-//  float theta = Point::toRadians(degrees);
-//};
 
 
 //in radians
@@ -28,8 +23,3 @@ int Point::yAtTheta(float theta) {
 
   return round(x * s + y * c);
 }
-
-
-//float Point::toRadians(int degrees) {
-//  return degrees * (PI/180);
-//}

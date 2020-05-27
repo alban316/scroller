@@ -12,7 +12,7 @@ class Shape {
 
 public:
   Shape(Point *point, int rotationStep, int x, int y);
-  virtual ~Shape() {};
+  ~Shape();
 
   int getNextRotationStep();
   void setRotationStep(int step);
@@ -21,12 +21,11 @@ public:
   void dump();
   bool trySpawn(Layer *background, int dx = 0, int dy = -2);
   bool tryLeftRight(Layer *background, int dx);
-  //Layer *tryDown(Layer *background);
+  bool tryDrop(Layer *background, int dy);
   bool tryRotate(Layer *background);
 
   Layer *layer;
   Point *point;
-
 };
 
 #endif

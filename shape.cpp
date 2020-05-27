@@ -19,6 +19,11 @@ Shape::Shape(Point *point, int rotationStep, int x, int y) {
 }
 
 
+Shape::~Shape() {
+  delete layer;
+}
+
+
 int Shape::getNextRotationStep() {
   int nextStep = rotationStep + 1;
 
@@ -36,20 +41,20 @@ void Shape::setRotationStep(int step) {
 }
 
 
-void Shape::setRelativeTranslation(int x, int y) {
-  this->x += x;
-  this->y += y;
+void Shape::setRelativeTranslation(int dx, int dy) {
+  x += dx;
+  y += dy;
   setLayer();
 }
 
 
 bool Shape::trySpawn(Layer *background, int dx, int dy) {
 
-  int vars[] = {dx, dy};
-  Logger::log("trySpawn dx = ?, dy = ?", vars, 2);
+  //int vars[] = {dx, dy};
+  //Logger::log("trySpawn dx = ?, dy = ?", vars, 2);
 
-  Shape proposed = Shape(point, rotationStep, dx, dy);
-  proposed.layer->dump();
+  Shape proposed = Shape(point, rotationStep, x + dx, y + dy);
+  //proposed.layer->dump();
 
 
   if (proposed.layer->collisionOrBoundary(background))
@@ -78,6 +83,16 @@ bool Shape::tryRotate(Layer *background) {
 
 bool Shape::tryLeftRight(Layer *background, int dx) {
   return trySpawn(background, dx, 0);
+}
+
+
+bool Shape::tryDrop(Layer *background, int dy) {
+  if (layer->digVal[7] > 0)
+    // we are already as low as we can go
+    return false;
+
+  else
+    return trySpawn(background, 0, dy);
 }
 
 

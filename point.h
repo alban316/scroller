@@ -11,8 +11,6 @@ public:
   Point(int x, int y);
   virtual ~Point() {};
 
-  static float toRadians(int degrees);
-
   int xAtTheta(float radians);
   int yAtTheta(float radians);
 };

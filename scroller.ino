@@ -10,15 +10,18 @@
 #define REG_SCANLIMIT (0x0B)
 #define REG_SHUTDOWN (0x0C)
 #define REG_DISPLAYTEST (0x0F)
-
 #define ON (0x1)
 #define OFF (0x0)
 
 
+// globals & consts
 Point ShapeTemplate[2][4] = {
   {Point(0,0), Point(-1,0), Point(1,0), Point(-1,-1)}, // L Shape, Left
   {Point(0,0), Point(-1,0), Point(1,0), Point(1, -1)}, // L Shape, Right
 };
+
+const int buttonPin = 2;
+
 
 void set_register(byte address, byte value)
 {
@@ -29,7 +32,7 @@ void set_register(byte address, byte value)
 }
 
 
-void init_doggydoo()
+void init_max()
 {
   set_register(REG_DISPLAYTEST, OFF);
   set_register(REG_INTENSITY, 0x8);
@@ -37,7 +40,6 @@ void init_doggydoo()
   set_register(REG_SCANLIMIT, 7);
   set_register(REG_DECODE, B00000000);
 }
-
 
 
 void setup (void) {
@@ -48,7 +50,10 @@ void setup (void) {
   Serial.begin(9600);
   Serial.println("Test from Arduino world!");
 
-  init_doggydoo();
+  // init button
+  pinMode(buttonPin, INPUT);
+
+  init_max();
 }
 
 
@@ -62,24 +67,66 @@ void render(Layer *layer) {
 }
 
 
+void processInput(Shape *shape, Layer *background) {
+  int buttonState = digitalRead(buttonPin);
+
+  if (buttonState == HIGH) {
+    Logger::log("button pushed!");
+    shape->tryRotate(background);
+  }
+}
+
 
 void loop (void) {
-  //init background layer with all zeros
   Layer *background = new Layer();
-  Layer *foreground;
+  Layer *displ = new Layer();
 
   Shape shape = Shape(ShapeTemplate[0], 0, 0, 0);
 
-  if (shape.trySpawn(background)) {
-    foreground = shape.layer;
-    render(foreground);
+  int elapsed = millis();
+  int lastInput = 0;
+  int lastStatus = 0;
+  int lastDrop = 0;
+  int quit = elapsed;
+
+  bool playing = shape.trySpawn(background, 0, -2);
+
+  while (playing) {
+    elapsed = millis();
+
+    displ->fill(0);
+    displ->merge(background);
+    displ->merge(shape.layer);
+    render(displ);
+
+    // process input ever 100 ms
+    if (elapsed - lastInput > 100) {
+      lastInput = elapsed;
+      processInput(&shape, background);
+    }
+
+    // process drop!!
+    if (elapsed - lastDrop > 1000) {
+      lastDrop = elapsed;
+      
+      if (!shape.tryDrop(background, 1)) {
+        background->merge(shape.layer);
+        shape = Shape(ShapeTemplate[0], 0, 0, 0);
+        playing = shape.trySpawn(background, 0, -2);
+      }      
+    }
+
+    // for testing, output idle every 1 sec
+    if (elapsed - lastStatus > 1000) {
+      lastStatus = elapsed;
+      Logger::log("idle");
+    }
+
+    if (elapsed - quit > 20000) {
+      playing = false;
+    }
+
   }
 
-  else {
-    Logger::log("Game Over!");
-  }
-
-
-  delay(1000);
-
+  Logger::log("Game Over!");
 }
