@@ -12,7 +12,7 @@ This was an exercise in learning SPI and refreshing my C++ coding skills (which 
 * After about 5 or so pieces the game seems to puke. Possibly a memory issue? I tried to conserve RAM by using shorts instead of ints and **delete**(ing) everything that was instantiated with **new** to avoid memory leaks.
 * It's possible to scroll off the screen to the right despite some effort in my code to avoid this.
 
-The above issues will probably never be resolved (by me) since my overall goals were achieved. Making a viable game was never one of them. There's enough here for proof of concept.
+The above issues will probably never be resolved (by me) since my overall goals were achieved. Making a viable game was never one of them. There's enough here that works to prove the concept.
 
 ##### Remarks
 * The Logger class was created to abstract debugging output so that I could have separate implementations for the Arduino (using HardwareSerial) and desktop (using iostream), but the rest of the code would otherwise be the same. 
