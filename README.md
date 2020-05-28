@@ -16,3 +16,6 @@ The above issues will probably never be resolved (by me) since my overall goals 
 
 ##### Remarks
 * The Logger class was created to abstract debugging output so that I could have separate implementations for the Arduino (using HardwareSerial) and desktop (using iostream), but the rest of the code would otherwise be the same. 
+
+##### Links
+* [Project on Hackaday.IO](https://hackaday.io/project/171994-arduino-tetris-clone-with-max7219-8x8-matrix)
