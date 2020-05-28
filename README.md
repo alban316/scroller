@@ -9,7 +9,7 @@ This was an exercise in learning SPI and refreshing my C++ coding skills (which 
 
 ##### Some known issues
 * Rand() needs to be seeded from millis(). As is, the same pieces are generated in the same sequence every time.
-* After about 5 or so pieces the game seems to puke. Possibly a memory issue? I tried to preserve RAM by using shorts instead of ints and **delete**(ing) everything that was instantiated with **new**.
+* After about 5 or so pieces the game seems to puke. Possibly a memory issue? I tried to conserve RAM by using shorts instead of ints and **delete**(ing) everything that was instantiated with **new** to avoid memory leaks.
 * It's possible to scroll off the screen to the right despite some effort in my code to avoid this.
 
 The above issues will probably never be resolved (by me) since my overall goals were achieved. Making a viable game was never one of them. There's enough here for proof of concept.
